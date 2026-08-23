@@ -36,6 +36,11 @@ describe('usage storage', () => {
       mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
       await expect(getRecentUsage()).resolves.toEqual(stored);
     });
+
+    it('returns an empty array when Storage.getItem rejects', async () => {
+      mockedStorage.getItem.mockRejectedValue(new Error('bridge unavailable'));
+      await expect(getRecentUsage()).resolves.toEqual([]);
+    });
   });
 
   describe('recordUsage', () => {
@@ -61,6 +66,14 @@ describe('usage storage', () => {
       mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
       const result = await recordUsage('cost');
       expect(result.map((e) => e.calculatorId)).toEqual(['cost', 'discount']);
+    });
+
+    it('still resolves with the updated list when Storage.setItem rejects', async () => {
+      mockedStorage.getItem.mockResolvedValue(null);
+      mockedStorage.setItem.mockRejectedValue(new Error('bridge unavailable'));
+      await expect(recordUsage('cost')).resolves.toEqual([
+        { calculatorId: 'cost', lastUsedAt: 1000, useCount: 1 },
+      ]);
     });
   });
 });

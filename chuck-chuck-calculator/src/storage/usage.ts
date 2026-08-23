@@ -9,11 +9,11 @@ export type UsageEntry = {
 };
 
 export async function getRecentUsage(): Promise<UsageEntry[]> {
-  const raw = await Storage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return [];
-  }
   try {
+    const raw = await Storage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return [];
+    }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as UsageEntry[]) : [];
   } catch {
@@ -33,6 +33,10 @@ export async function recordUsage(calculatorId: string): Promise<UsageEntry[]> {
     : [...current, { calculatorId, lastUsedAt: now, useCount: 1 }];
 
   updated.sort((a, b) => b.lastUsedAt - a.lastUsedAt);
-  await Storage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  try {
+    await Storage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  } catch {
+    // Best-effort persistence — usage tracking must never block navigation or crash the caller.
+  }
   return updated;
 }

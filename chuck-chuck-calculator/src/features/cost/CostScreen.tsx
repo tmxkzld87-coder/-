@@ -25,15 +25,15 @@ export function CostScreen() {
   const [marginRatePercent, setMarginRatePercent] = useState('');
   const [sellingPriceInput, setSellingPriceInput] = useState('');
 
-  const result = useMemo(() => {
+  const { result, errorMessage } = useMemo(() => {
     if (materialCost === '') {
-      return null;
+      return { result: null, errorMessage: null };
     }
     if (mode === 'marginToPrice' && marginRatePercent === '') {
-      return null;
+      return { result: null, errorMessage: null };
     }
     if (mode === 'priceToMargin' && sellingPriceInput === '') {
-      return null;
+      return { result: null, errorMessage: null };
     }
 
     const base = {
@@ -48,9 +48,13 @@ export function CostScreen() {
         : { ...base, mode, sellingPrice: toNumber(sellingPriceInput) };
 
     try {
-      return calculateCost(input);
+      return { result: calculateCost(input), errorMessage: null };
     } catch {
-      return null;
+      const message =
+        mode === 'marginToPrice'
+          ? '마진율은 100% 미만으로 입력해주세요.'
+          : '판매가는 0보다 큰 값을 입력해주세요.';
+      return { result: null, errorMessage: message };
     }
   }, [mode, materialCost, subMaterialCost, laborCost, otherCost, marginRatePercent, sellingPriceInput]);
 
@@ -98,11 +102,21 @@ export function CostScreen() {
         />
       )}
 
+      {errorMessage ? (
+        <Text testID="cost-error" style={styles.errorText}>
+          {errorMessage}
+        </Text>
+      ) : null}
+
       {result ? (
         <View testID="cost-result" style={styles.resultSection}>
           <ResultCard label="원가율" value={`${result.costRatePercent}%`} />
           <ResultCard label="판매가" value={formatWon(result.sellingPrice)} />
-          <ResultCard label="예상 이익" value={formatWon(result.expectedProfit)} emphasis="success" />
+          <ResultCard
+            label="예상 이익"
+            value={formatWon(result.expectedProfit)}
+            emphasis={result.expectedProfit >= 0 ? 'success' : 'error'}
+          />
         </View>
       ) : null}
     </ScrollView>
@@ -124,4 +138,5 @@ const styles = StyleSheet.create({
   modeButtonText: { fontSize: fontSizes.caption, color: colors.primaryBlue, fontWeight: fontWeights.bold },
   modeButtonTextActive: { color: colors.background },
   resultSection: { marginTop: 12, borderTopWidth: 1, borderTopColor: colors.divider, paddingTop: 12 },
+  errorText: { marginHorizontal: 20, marginTop: 8, fontSize: fontSizes.caption, color: colors.error },
 });

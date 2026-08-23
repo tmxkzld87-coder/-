@@ -4,7 +4,7 @@ import pluginReact from 'eslint-plugin-react';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { ignores: ['**/node_modules/**', '**/dist/**', '*.{cjs,js}'] },
+  { ignores: ['**/node_modules/**', '**/dist/**', '*.{cjs,js}', '.granite/**', 'src/router.gen.ts'] },
   { files: ['pages/**/*.{ts,jsx,tsx}', 'src/**/*.{ts,jsx,tsx}'] },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
@@ -16,4 +16,9 @@ export default [
     },
   },
   pluginReact.configs.flat.recommended,
+  {
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+    },
+  },
 ];
