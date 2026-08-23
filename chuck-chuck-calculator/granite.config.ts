@@ -13,7 +13,7 @@ export default defineConfig({
       brand: {
         displayName: '척척 계산기',
         primaryColor: '#3182F6',
-        icon: '', // 앱인토스 콘솔에 앱 등록 후 아이콘 URL로 교체 (이 플랜 범위 밖)
+        icon: 'https://static.toss.im/appsintoss/77253/002ba768-3022-49ff-aebf-0afcacb9a3e1.png', // 임시 플레이스홀더 아이콘 (콘솔 miniAppId 67877) — 실제 로고로 교체 필요
       },
       permissions: [],
     }),
