@@ -56,7 +56,7 @@ export function HomeScreen({ onNavigateToCalculator, onOpenSettings }: HomeScree
 
   return (
     <View style={styles.screen}>
-      <ScrollView>
+      <ScrollView style={styles.scroll}>
         <Header title="척척 계산기" subtitle="필요한 계산, 한 번에" />
         <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
 
@@ -107,6 +107,7 @@ export function HomeScreen({ onNavigateToCalculator, onOpenSettings }: HomeScree
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
+  scroll: { flex: 1 },
   recentRow: { paddingLeft: 20, marginBottom: 16 },
   chip: {
     backgroundColor: colors.lightBlueBackground,
