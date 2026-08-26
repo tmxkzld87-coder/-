@@ -16,6 +16,7 @@ function Page() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         navigation.navigate(route as any);
       }}
+      onOpenSettings={() => navigation.navigate('/settings')}
     />
   );
 }

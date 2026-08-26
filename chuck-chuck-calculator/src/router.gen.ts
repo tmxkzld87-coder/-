@@ -5,6 +5,7 @@ import { Route as _DiscountRoute } from '../pages/discount';
 import { Route as _IndexRoute } from '../pages/';
 import { Route as _ProfitRateRoute } from '../pages/profit-rate';
 import { Route as _SalaryRoute } from '../pages/salary';
+import { Route as _SettingsRoute } from '../pages/settings';
 import { Route as _ShippingFeeRoute } from '../pages/shipping-fee';
 import { Route as _SplitBillRoute } from '../pages/split-bill';
 import { Route as _TravelExpenseRoute } from '../pages/travel-expense';
@@ -17,6 +18,7 @@ declare module '@granite-js/react-native' {
     '/': (typeof _IndexRoute)['_inputType'];
     '/profit-rate': (typeof _ProfitRateRoute)['_inputType'];
     '/salary': (typeof _SalaryRoute)['_inputType'];
+    '/settings': (typeof _SettingsRoute)['_inputType'];
     '/shipping-fee': (typeof _ShippingFeeRoute)['_inputType'];
     '/split-bill': (typeof _SplitBillRoute)['_inputType'];
     '/travel-expense': (typeof _TravelExpenseRoute)['_inputType'];
@@ -29,6 +31,7 @@ declare module '@granite-js/react-native' {
     '/': (typeof _IndexRoute)['_outputType'];
     '/profit-rate': (typeof _ProfitRateRoute)['_outputType'];
     '/salary': (typeof _SalaryRoute)['_outputType'];
+    '/settings': (typeof _SettingsRoute)['_outputType'];
     '/shipping-fee': (typeof _ShippingFeeRoute)['_outputType'];
     '/split-bill': (typeof _SplitBillRoute)['_outputType'];
     '/travel-expense': (typeof _TravelExpenseRoute)['_outputType'];

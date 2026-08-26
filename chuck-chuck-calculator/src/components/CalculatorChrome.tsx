@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { AdContainer } from './AdContainer';
+import { BannerAd } from '../ads/BannerAd';
+import { useFullScreenAd } from '../ads/useFullScreenAd';
+import { AD_GROUP_IDS } from '../ads/adConfig';
+import { isAdFreeActive } from '../ads/adFreeSession';
+import { shouldShowInterstitial } from '../ads/interstitialFrequency';
 import { colors } from '../theme/colors';
 import { fontSizes, fontWeights } from '../theme/typography';
 import { getHistory, saveHistoryEntry, type CalculatorHistoryEntry } from '../storage/history';
@@ -36,6 +40,26 @@ export function CalculatorChrome({
   const [historyEntries, setHistoryEntries] = useState<CalculatorHistoryEntry[]>([]);
   const [saveModalVisible, setSaveModalVisible] = useState(false);
   const [saveTitle, setSaveTitle] = useState('');
+
+  const [isAdFree, setIsAdFree] = useState<boolean | null>(null);
+  const shouldShowInterstitialRef = useRef<boolean | null>(null);
+  const interstitialShownRef = useRef(false);
+  const interstitialAd = useFullScreenAd({ adGroupId: AD_GROUP_IDS.interstitial });
+
+  useEffect(() => {
+    shouldShowInterstitialRef.current = shouldShowInterstitial();
+    isAdFreeActive().then(setIsAdFree);
+  }, []);
+
+  useEffect(() => {
+    if (interstitialShownRef.current || !shouldShowInterstitialRef.current || isAdFree !== false) {
+      return;
+    }
+    if (interstitialAd.isLoaded) {
+      interstitialShownRef.current = true;
+      interstitialAd.show();
+    }
+  }, [isAdFree, interstitialAd.isLoaded]);
 
   const openHistory = async () => {
     const all = await getHistory();
@@ -86,7 +110,7 @@ export function CalculatorChrome({
         </View>
       </ScrollView>
 
-      <AdContainer />
+      {isAdFree === false ? <BannerAd adGroupId={AD_GROUP_IDS.banner} /> : null}
 
       <Modal visible={saveModalVisible} transparent animationType="fade" onRequestClose={() => setSaveModalVisible(false)}>
         <View style={styles.modalBackdrop}>

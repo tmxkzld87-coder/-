@@ -5,6 +5,9 @@ import { SearchBar } from '../../components/SearchBar';
 import { CalculatorCard } from '../../components/CalculatorCard';
 import { CalculatorListItem } from '../../components/CalculatorListItem';
 import { BottomNavigation, type BottomTab } from '../../components/BottomNavigation';
+import { BannerAd } from '../../ads/BannerAd';
+import { AD_GROUP_IDS } from '../../ads/adConfig';
+import { isAdFreeActive } from '../../ads/adFreeSession';
 import { searchCalculators, findCalculator, FREQUENTLY_USED_IDS } from '../../data/calculators';
 import { getRecentUsage, recordUsage, type UsageEntry } from '../../storage/usage';
 import { colors } from '../../theme/colors';
@@ -12,14 +15,17 @@ import { fontSizes, fontWeights } from '../../theme/typography';
 
 export type HomeScreenProps = {
   onNavigateToCalculator: (route: string) => void;
+  onOpenSettings: () => void;
 };
 
-export function HomeScreen({ onNavigateToCalculator }: HomeScreenProps) {
+export function HomeScreen({ onNavigateToCalculator, onOpenSettings }: HomeScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [recentUsage, setRecentUsage] = useState<UsageEntry[]>([]);
+  const [isAdFree, setIsAdFree] = useState<boolean | null>(null);
 
   useEffect(() => {
     getRecentUsage().then(setRecentUsage);
+    isAdFreeActive().then(setIsAdFree);
   }, []);
 
   const isSearching = searchQuery.trim().length > 0;
@@ -39,6 +45,10 @@ export function HomeScreen({ onNavigateToCalculator }: HomeScreenProps) {
 
   const handleTabPress = (tab: BottomTab) => {
     if (tab === 'home') {
+      return;
+    }
+    if (tab === 'settings') {
+      onOpenSettings();
       return;
     }
     Alert.alert('준비 중이에요', '해당 탭은 곧 만나보실 수 있어요.');
@@ -89,6 +99,7 @@ export function HomeScreen({ onNavigateToCalculator }: HomeScreenProps) {
           ))}
         </View>
       </ScrollView>
+      {isAdFree === false ? <BannerAd adGroupId={AD_GROUP_IDS.banner} /> : null}
       <BottomNavigation activeTab="home" onTabPress={handleTabPress} />
     </View>
   );

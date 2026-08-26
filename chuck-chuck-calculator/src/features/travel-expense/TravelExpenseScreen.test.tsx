@@ -10,6 +10,8 @@ jest.mock('@apps-in-toss/framework', () => ({
     setItem: jest.fn(),
   },
   InlineAd: () => null,
+  loadFullScreenAd: jest.fn(() => () => {}),
+  showFullScreenAd: jest.fn(() => () => {}),
 }));
 
 const mockedStorage = jest.mocked(Storage);
