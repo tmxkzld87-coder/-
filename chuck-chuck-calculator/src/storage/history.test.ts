@@ -1,0 +1,60 @@
+import { Storage } from '@apps-in-toss/framework';
+import { getHistory, saveHistoryEntry } from './history';
+
+jest.mock('@apps-in-toss/framework', () => ({
+  Storage: {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+  },
+  InlineAd: () => null,
+}));
+
+const mockedStorage = jest.mocked(Storage);
+
+describe('history storage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(Date, 'now').mockReturnValue(1000);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('getHistory', () => {
+    it('returns an empty array when nothing is stored', async () => {
+      mockedStorage.getItem.mockResolvedValue(null);
+      await expect(getHistory()).resolves.toEqual([]);
+    });
+
+    it('returns an empty array when the stored value is not valid JSON', async () => {
+      mockedStorage.getItem.mockResolvedValue('not json');
+      await expect(getHistory()).resolves.toEqual([]);
+    });
+  });
+
+  describe('saveHistoryEntry', () => {
+    it('prepends a new entry with a generated id and timestamp', async () => {
+      mockedStorage.getItem.mockResolvedValue(null);
+      const result = await saveHistoryEntry({ calculatorType: 'cost', title: '아메리카노', summary: '판매가 4,500원 · 원가율 10%' });
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({ calculatorType: 'cost', title: '아메리카노', createdAt: 1000 });
+      expect(result[0]!.id).toEqual(expect.any(String));
+    });
+
+    it('keeps existing entries and puts the new one first', async () => {
+      const stored = [{ id: 'old', calculatorType: 'cost', title: '기존', summary: '', createdAt: 100 }];
+      mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
+      const result = await saveHistoryEntry({ calculatorType: 'discount', title: '새 계산', summary: '' });
+      expect(result.map((e) => e.title)).toEqual(['새 계산', '기존']);
+    });
+
+    it('still resolves with the updated list when Storage.setItem rejects', async () => {
+      mockedStorage.getItem.mockResolvedValue(null);
+      mockedStorage.setItem.mockRejectedValue(new Error('bridge unavailable'));
+      await expect(
+        saveHistoryEntry({ calculatorType: 'cost', title: '아메리카노', summary: '' }),
+      ).resolves.toHaveLength(1);
+    });
+  });
+});

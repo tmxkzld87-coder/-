@@ -1,12 +1,12 @@
 import { createRoute } from '@granite-js/react-native';
 import React from 'react';
-import { CostScreen } from '../features/cost/CostScreen';
+import { VatScreen } from '../features/vat/VatScreen';
 
-export const Route = createRoute('/cost', {
+export const Route = createRoute('/vat', {
   component: Page,
 });
 
 function Page() {
   const navigation = Route.useNavigation();
-  return <CostScreen onBack={() => navigation.goBack()} />;
+  return <VatScreen onBack={() => navigation.goBack()} />;
 }

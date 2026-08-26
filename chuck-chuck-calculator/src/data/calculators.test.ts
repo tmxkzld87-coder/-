@@ -6,9 +6,9 @@ describe('calculators data', () => {
     expect(new Set(calculators.map((c) => c.id)).size).toBe(8);
   });
 
-  it('marks only cost as implemented', () => {
+  it('marks every calculator as implemented', () => {
     const implementedIds = calculators.filter((c) => c.implemented).map((c) => c.id);
-    expect(implementedIds).toEqual(['cost']);
+    expect(implementedIds).toEqual(calculators.map((c) => c.id));
   });
 
   it('gives every calculator a name, description, icon and route', () => {

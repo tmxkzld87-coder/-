@@ -9,6 +9,7 @@ jest.mock('@apps-in-toss/framework', () => ({
     getItem: jest.fn(),
     setItem: jest.fn(),
   },
+  InlineAd: () => null,
 }));
 
 const mockedStorage = jest.mocked(Storage);
@@ -49,13 +50,9 @@ describe('HomeScreen', () => {
     expect(mockedStorage.setItem).toHaveBeenCalled();
   });
 
-  it('shows a "준비 중" alert instead of navigating for an unimplemented calculator', () => {
-    const onNavigateToCalculator = jest.fn();
-    render(<HomeScreen onNavigateToCalculator={onNavigateToCalculator} />);
-    fireEvent.press(screen.getByTestId('calculator-list-item-vat'));
-    expect(onNavigateToCalculator).not.toHaveBeenCalled();
-    expect(Alert.alert).toHaveBeenCalledWith('준비 중이에요', expect.any(String));
-  });
+  // All 8 initial calculators are implemented now, so there's no `implemented: false`
+  // entry left in real data to exercise the "준비 중" alert path in handlePressCalculator.
+  // Re-add a test for it once a new calculator lands in data/calculators.ts unimplemented.
 
   it('shows recent-use chips only after a usage record exists', async () => {
     mockedStorage.getItem.mockResolvedValue(

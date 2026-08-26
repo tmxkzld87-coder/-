@@ -7,11 +7,12 @@ export type ResultCardProps = {
   label: string;
   value: string;
   emphasis?: 'default' | 'success' | 'error';
+  testID?: string;
 };
 
-export function ResultCard({ label, value, emphasis = 'default' }: ResultCardProps) {
+export function ResultCard({ label, value, emphasis = 'default', testID }: ResultCardProps) {
   return (
-    <View style={styles.container}>
+    <View testID={testID} style={styles.container}>
       <Text style={styles.label}>{label}</Text>
       <Text
         style={[

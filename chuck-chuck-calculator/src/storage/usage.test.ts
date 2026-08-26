@@ -6,6 +6,7 @@ jest.mock('@apps-in-toss/framework', () => ({
     getItem: jest.fn(),
     setItem: jest.fn(),
   },
+  InlineAd: () => null,
 }));
 
 const mockedStorage = jest.mocked(Storage);
