@@ -272,6 +272,11 @@ Phase 1에서는 최고 점수/최고 생존 시간/총 플레이 횟수만 Asyn
 - **연출**: 상단 HUD에 콤보 배지, 화면 상단에 진행 중인 이벤트 배너, 근접회피/콤보/이벤트 시작 시 화면 중앙에 짧은 토스트 텍스트. 게임오버 화면의 NEW RECORD! 연출은 Phase 1에서 이미 구현됨.
 - **기술**: `src/game/scoring.ts`(근접회피 점수 계산), `src/game/events.ts`(랜덤 이벤트 상수/추첨) 신설. `collision.ts`에 `isNearMiss` 추가, 장애물 판정을 `bottom`/`height` 구간 기반으로 일반화(바닥 장애물은 위쪽 가장자리를, 공중 장애물은 아래쪽 가장자리를 후하게 깎는 방식). 순수 함수 테스트 42개로 확장.
 
+## 21-1. 전체화면 네비게이션 바 + 코인 3단계 (2026-08-27)
+
+- **전체화면**: 토스 앱의 기본 네비게이션 바(뒤로가기+미니앱 아이콘/이름+더보기+X)가 화면 상단을 계속 차지하고 있던 걸 사용자가 스크린샷으로 지적함. `granite.config.ts`에 `appType: 'game'`(더보기+닫기만 있는 게임용 바)과 `navigationBar: { transparentBackground: true, theme: 'dark' }`를 추가해 뒤로가기/제목을 없애고 배경을 투명하게 만들어 콘텐츠가 화면 끝까지 채워지도록 함. 다만 더보기/닫기 버튼은 투명하게 콘텐츠 위에 계속 떠 있어서, `Hud`에 `useSafeAreaInsets()`(`@granite-js/native/react-native-safe-area-context`)로 top/right 안전 여백을 적용해 점수/시간 텍스트가 그 버튼들과 겹치지 않게 함.
+- **코인 3단계**: 작은코인(10점, 반지름10) / 중간코인(30점, 반지름16) / 왕코인(100점, 반지름26, 등장 확률 10%)으로 분화(`src/game/coin.ts`의 `COIN_SPECS`). 왕코인은 `CoinView.tsx`에서 애니메이션(회전하는 반짝임 4개 + 맥동하는 후광)으로 화려하게 연출, 나머지는 크기만 다른 단순한 원.
+
 ## 22. 참고 자료
 
 - 앱인토스 개발자센터: https://developers-apps-in-toss.toss.im/
