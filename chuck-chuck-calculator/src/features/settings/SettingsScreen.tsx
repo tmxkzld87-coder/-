@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors } from '../../theme/colors';
 import { fontSizes, fontWeights } from '../../theme/typography';
 import { useFullScreenAd } from '../../ads/useFullScreenAd';
@@ -34,17 +34,29 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
 
   const isAdFreeActiveNow = adFreeMinutesLeft > 0;
 
+  const handleSubscribe = () => {
+    Alert.alert('준비 중이에요', '구독 결제는 곧 만나보실 수 있어요.');
+  };
+
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
         <TouchableOpacity testID="settings-back-button" onPress={onBack} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Text style={styles.headerBack}>‹ 설정</Text>
+          <Text style={styles.headerBack}>‹ 프리미엄</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scroll}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>광고</Text>
+          <Text style={styles.sectionTitle}>구독</Text>
+          <Text style={styles.description}>월 3,500원 구독하면 모든 계산기와 무제한 기록 저장을 이용할 수 있어요.</Text>
+          <TouchableOpacity testID="subscribe-button" style={styles.button} onPress={handleSubscribe}>
+            <Text style={styles.buttonText}>구독하기</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>광고 제거</Text>
 
           {isAdFreeActiveNow ? (
             <Text testID="ad-free-status" style={styles.statusText}>

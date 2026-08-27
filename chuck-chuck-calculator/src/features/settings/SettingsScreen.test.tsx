@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import { act } from 'react-test-renderer';
 import { Storage, loadFullScreenAd, showFullScreenAd } from '@apps-in-toss/framework';
@@ -64,5 +65,13 @@ describe('SettingsScreen', () => {
 
     expect(mockedStorage.setItem).toHaveBeenCalled();
     expect(screen.getByTestId('ad-free-status')).toBeTruthy();
+  });
+
+  it('shows a coming-soon alert when the subscribe button is pressed', () => {
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    render(<SettingsScreen onBack={jest.fn()} />);
+    fireEvent.press(screen.getByTestId('subscribe-button'));
+    expect(alertSpy).toHaveBeenCalledWith('준비 중이에요', '구독 결제는 곧 만나보실 수 있어요.');
+    alertSpy.mockRestore();
   });
 });

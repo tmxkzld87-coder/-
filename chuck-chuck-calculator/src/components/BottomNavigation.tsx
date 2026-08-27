@@ -13,7 +13,7 @@ export type BottomNavigationProps = {
 const TABS: { id: BottomTab; label: string; icon: string }[] = [
   { id: 'home', label: '홈', icon: '🏠' },
   { id: 'history', label: '기록', icon: '🕘' },
-  { id: 'settings', label: '설정', icon: '⚙️' },
+  { id: 'settings', label: '프리미엄', icon: '👑' },
 ];
 
 // 토스 미니앱 브랜딩 가이드의 플로팅 탭바 형태: 화면 좌우·하단에서 띄운 알약형
