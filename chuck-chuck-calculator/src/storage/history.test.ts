@@ -1,5 +1,5 @@
 import { Storage } from '@apps-in-toss/framework';
-import { getHistory, saveHistoryEntry } from './history';
+import { getHistory, saveHistoryEntry, deleteHistoryEntry } from './history';
 
 jest.mock('@apps-in-toss/framework', () => ({
   Storage: {
@@ -55,6 +55,57 @@ describe('history storage', () => {
       await expect(
         saveHistoryEntry({ calculatorType: 'cost', title: '아메리카노', summary: '' }),
       ).resolves.toHaveLength(1);
+    });
+
+    it('defaults to the free cap (3) and drops the oldest entry beyond it', async () => {
+      // saveHistoryEntry always prepends, so a real stored list is newest-first —
+      // the fixture must match that invariant for the cap's "drop the tail" logic to be meaningful.
+      const stored = [
+        { id: 'c', calculatorType: 'cost', title: '3', summary: '', createdAt: 300 },
+        { id: 'b', calculatorType: 'cost', title: '2', summary: '', createdAt: 200 },
+        { id: 'a', calculatorType: 'cost', title: '1', summary: '', createdAt: 100 },
+      ];
+      mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
+      const result = await saveHistoryEntry({ calculatorType: 'cost', title: '새 계산', summary: '' });
+      expect(result.map((e) => e.title)).toEqual(['새 계산', '3', '2']);
+    });
+
+    it('keeps more entries when a higher maxEntries is passed (subscribed users)', async () => {
+      const stored = [
+        { id: 'c', calculatorType: 'cost', title: '3', summary: '', createdAt: 300 },
+        { id: 'b', calculatorType: 'cost', title: '2', summary: '', createdAt: 200 },
+        { id: 'a', calculatorType: 'cost', title: '1', summary: '', createdAt: 100 },
+      ];
+      mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
+      const result = await saveHistoryEntry({ calculatorType: 'cost', title: '새 계산', summary: '' }, 100);
+      expect(result.map((e) => e.title)).toEqual(['새 계산', '3', '2', '1']);
+    });
+  });
+
+  describe('deleteHistoryEntry', () => {
+    it('removes the entry with the matching id', async () => {
+      const stored = [
+        { id: 'a', calculatorType: 'cost', title: '1', summary: '', createdAt: 100 },
+        { id: 'b', calculatorType: 'cost', title: '2', summary: '', createdAt: 200 },
+      ];
+      mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
+      const result = await deleteHistoryEntry('a');
+      expect(result.map((e) => e.id)).toEqual(['b']);
+      expect(mockedStorage.setItem).toHaveBeenCalledWith('calculator-history-v1', JSON.stringify(result));
+    });
+
+    it('is a no-op when the id does not exist', async () => {
+      const stored = [{ id: 'a', calculatorType: 'cost', title: '1', summary: '', createdAt: 100 }];
+      mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
+      const result = await deleteHistoryEntry('missing');
+      expect(result).toEqual(stored);
+    });
+
+    it('still resolves when Storage.setItem rejects', async () => {
+      const stored = [{ id: 'a', calculatorType: 'cost', title: '1', summary: '', createdAt: 100 }];
+      mockedStorage.getItem.mockResolvedValue(JSON.stringify(stored));
+      mockedStorage.setItem.mockRejectedValue(new Error('bridge unavailable'));
+      await expect(deleteHistoryEntry('a')).resolves.toEqual([]);
     });
   });
 });

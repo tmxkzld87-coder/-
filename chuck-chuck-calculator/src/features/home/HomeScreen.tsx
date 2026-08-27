@@ -16,9 +16,10 @@ import { fontSizes, fontWeights } from '../../theme/typography';
 export type HomeScreenProps = {
   onNavigateToCalculator: (route: string) => void;
   onOpenSettings: () => void;
+  onOpenHistory: () => void;
 };
 
-export function HomeScreen({ onNavigateToCalculator, onOpenSettings }: HomeScreenProps) {
+export function HomeScreen({ onNavigateToCalculator, onOpenSettings, onOpenHistory }: HomeScreenProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [recentUsage, setRecentUsage] = useState<UsageEntry[]>([]);
   const [isAdFree, setIsAdFree] = useState<boolean | null>(null);
@@ -51,7 +52,7 @@ export function HomeScreen({ onNavigateToCalculator, onOpenSettings }: HomeScree
       onOpenSettings();
       return;
     }
-    Alert.alert('준비 중이에요', '해당 탭은 곧 만나보실 수 있어요.');
+    onOpenHistory();
   };
 
   return (
@@ -78,17 +79,21 @@ export function HomeScreen({ onNavigateToCalculator, onOpenSettings }: HomeScree
         ) : null}
 
         {!isSearching ? (
-          <View style={styles.frequentGrid}>
-            {frequentlyUsed.map((calculator) => (
-              <CalculatorCard
-                key={calculator.id}
-                calculator={calculator}
-                onPress={() => handlePressCalculator(calculator.id)}
-              />
-            ))}
-          </View>
+          <>
+            <Text style={styles.sectionTitle}>자주 사용</Text>
+            <View style={styles.frequentGrid}>
+              {frequentlyUsed.map((calculator) => (
+                <CalculatorCard
+                  key={calculator.id}
+                  calculator={calculator}
+                  onPress={() => handlePressCalculator(calculator.id)}
+                />
+              ))}
+            </View>
+          </>
         ) : null}
 
+        {!isSearching ? <Text style={styles.sectionTitle}>전체 계산기</Text> : null}
         <View style={styles.fullListSection}>
           {filteredCalculators.map((calculator) => (
             <CalculatorListItem
@@ -117,6 +122,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   chipText: { fontSize: fontSizes.caption, color: colors.primaryBlue, fontWeight: fontWeights.bold },
+  sectionTitle: { fontSize: fontSizes.body, fontWeight: fontWeights.bold, color: colors.darkText, marginHorizontal: 20, marginBottom: 10 },
   frequentGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

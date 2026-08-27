@@ -7,7 +7,8 @@ import { isAdFreeActive } from '../ads/adFreeSession';
 import { shouldShowInterstitial } from '../ads/interstitialFrequency';
 import { colors } from '../theme/colors';
 import { fontSizes, fontWeights } from '../theme/typography';
-import { getHistory, saveHistoryEntry, type CalculatorHistoryEntry } from '../storage/history';
+import { getHistory, saveHistoryEntry, MAX_FREE_ENTRIES, MAX_SUBSCRIBED_ENTRIES, type CalculatorHistoryEntry } from '../storage/history';
+import { isSubscribed } from '../subscription/subscriptionStatus';
 import type { CalculatorId } from '../data/calculators';
 
 export type CalculatorChromeProps = {
@@ -78,11 +79,15 @@ export function CalculatorChrome({
   };
 
   const confirmSave = async () => {
-    await saveHistoryEntry({
-      calculatorType,
-      title: saveTitle.trim() || '이름 없는 계산',
-      summary: getSaveSummary(),
-    });
+    const subscribed = await isSubscribed();
+    await saveHistoryEntry(
+      {
+        calculatorType,
+        title: saveTitle.trim() || '이름 없는 계산',
+        summary: getSaveSummary(),
+      },
+      subscribed ? MAX_SUBSCRIBED_ENTRIES : MAX_FREE_ENTRIES,
+    );
     setSaveModalVisible(false);
   };
 

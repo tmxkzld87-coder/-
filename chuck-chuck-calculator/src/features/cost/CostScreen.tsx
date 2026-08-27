@@ -251,9 +251,9 @@ export function CostScreen({ onBack }: CostScreenProps) {
         <Text style={styles.refNote}>원가율 기준은 업종에 따라 달라질 수 있는 참고용 수치예요.</Text>
 
         <View style={styles.resultSubGrid}>
-          <ResultCard testID="total-cost-result" label="총 원가" value={formatWon(summary.totalCost)} />
-          <ResultCard testID="profit-result" label="예상 이익" value={formatWon(summary.profit)} emphasis={summary.profit >= 0 ? 'success' : 'error'} />
-          <ResultCard testID="revenue-result" label="예상 매출" value={formatWon(summary.totalRevenue)} />
+          <ResultCard testID="total-cost-result" style={styles.resultSubGridItem} label="총 원가" value={formatWon(summary.totalCost)} />
+          <ResultCard testID="profit-result" style={styles.resultSubGridItem} label="예상 이익" value={formatWon(summary.profit)} emphasis={summary.profit >= 0 ? 'success' : 'error'} />
+          <ResultCard testID="revenue-result" style={styles.resultSubGridItem} label="예상 매출" value={formatWon(summary.totalRevenue)} />
         </View>
       </View>
 
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
   statusPill: { fontSize: 11, fontWeight: fontWeights.bold, marginTop: 6 },
   refNote: { fontSize: 10, color: colors.secondaryText, marginTop: 6 },
   resultSubGrid: { flexDirection: 'row', marginTop: 8 },
+  resultSubGridItem: { flex: 1, paddingHorizontal: 4 },
   advancedBlock: { marginHorizontal: 20, marginTop: 12 },
   advancedToggle: {
     flexDirection: 'row',

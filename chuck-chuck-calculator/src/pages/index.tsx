@@ -17,6 +17,7 @@ function Page() {
         navigation.navigate(route as any);
       }}
       onOpenSettings={() => navigation.navigate('/settings')}
+      onOpenHistory={() => navigation.navigate('/history')}
     />
   );
 }
