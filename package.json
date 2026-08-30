@@ -7,7 +7,8 @@
     "test": "jest --passWithNoTests",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "deploy": "ait deploy"
+    "deploy": "ait deploy",
+    "postinstall": "node scripts/fix-granite-windows-paths.js"
   },
   "dependencies": {
     "@apps-in-toss/framework": "^2.10.10",
