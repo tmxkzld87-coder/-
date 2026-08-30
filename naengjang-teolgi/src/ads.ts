@@ -1,10 +1,8 @@
 import { loadFullScreenAd, showFullScreenAd } from '@apps-in-toss/framework';
 
-// 개발 중에는 반드시 테스트 광고 ID를 써야 한다 — 실제 ID로 테스트하면 광고 정책 위반으로
-// 간주될 수 있다. 실제 출시 전, 콘솔에서 발급받은 광고 그룹 ID로 교체해야 한다.
-export const INTERSTITIAL_AD_GROUP_ID = 'ait-ad-test-interstitial-id';
-export const RESULT_BANNER_AD_GROUP_ID = 'ait-ad-test-banner-id';
-export const SELECT_BANNER_AD_GROUP_ID = 'ait-ad-test-banner-id';
+export const INTERSTITIAL_AD_GROUP_ID = 'ait.v2.live.238719d8b37f4a42';
+export const RESULT_BANNER_AD_GROUP_ID = 'ait.v2.live.a2462babec214468';
+export const SELECT_BANNER_AD_GROUP_ID = 'ait.v2.live.a2462babec214468';
 
 type FullScreenAdEvent =
   | { type: 'requested' }
