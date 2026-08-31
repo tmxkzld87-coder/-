@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@apps-in-toss/framework": "^2.10.10",
+    "@apps-in-toss/native-modules": "2.10.10",
     "@granite-js/native": "1.0.43",
     "@granite-js/react-native": "1.0.43",
     "brick-module": "0.5.1",
