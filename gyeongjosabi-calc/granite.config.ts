@@ -11,10 +11,9 @@ export default defineConfig({
     hermes(),
     appsInToss({
       brand: {
-        displayName: '경조사비 계산기',
+        displayName: '경조사비 얼마낼까?',
         primaryColor: '#3182F6',
-        // TODO: 실제 배포 전, 콘솔에서 발급받은 아이콘 이미지 URL로 교체해야 한다.
-        icon: 'https://static.toss.im/appsintoss/icon-placeholder.png',
+        icon: 'https://static.toss.im/appsintoss/77253/29fd6222-f04e-418c-b846-117a13e106ec.png',
       },
       appType: 'general',
       navigationBar: {
