@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from '@granite-js/native/react-native-safe-area-context';
 import { createRoute } from '@granite-js/react-native';
@@ -10,6 +10,7 @@ import { RecommendationFilters, RecommendationSlot, ScoredRecipe } from '../reco
 import { RecipeCard } from '../components/RecipeCard';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { ResultRouteParams } from '../routeParams';
+import { INTERSTITIAL_AD_GROUP_ID, preloadAd, showAd, shouldShowResultActionAd } from '../ads';
 import { colors, spacing } from '../theme';
 
 export const Route = createRoute<ResultRouteParams>('/result', {
@@ -48,14 +49,44 @@ function ResultPage() {
   const [isRandomMode, setIsRandomMode] = useState(mode === 'random');
   const [state, setState] = useState<ResultState>(() => computeState(mode === 'random', [], ingredientIds, filters));
 
+  const [interstitialLoaded, setInterstitialLoaded] = useState(false);
+  const [adReloadKey, setAdReloadKey] = useState(0);
+
+  // '다른 메뉴 추천' · '아무거나 골라줘'를 누를 때마다 새로 보여줄 광고를 미리 로드해둔다.
+  useEffect(() => {
+    setInterstitialLoaded(false);
+    return preloadAd(INTERSTITIAL_AD_GROUP_ID, () => setInterstitialLoaded(true));
+  }, [adReloadKey]);
+
+  // 연타를 막기 위해 shouldShowResultActionAd()로 N번째 클릭에만 광고를 끼워 넣는다.
+  const withOptionalAd = useCallback(
+    (action: () => void) => {
+      if (interstitialLoaded && shouldShowResultActionAd()) {
+        setInterstitialLoaded(false);
+        const proceed = () => {
+          action();
+          setAdReloadKey((key) => key + 1);
+        };
+        showAd(INTERSTITIAL_AD_GROUP_ID, { onDismissed: proceed, onFailed: proceed });
+      } else {
+        action();
+      }
+    },
+    [interstitialLoaded]
+  );
+
   const handleShowMore = useCallback(() => {
-    setState((prev) => computeState(isRandomMode, prev.shownIds, ingredientIds, filters));
-  }, [isRandomMode, ingredientIds, filters]);
+    withOptionalAd(() => {
+      setState((prev) => computeState(isRandomMode, prev.shownIds, ingredientIds, filters));
+    });
+  }, [withOptionalAd, isRandomMode, ingredientIds, filters]);
 
   const handleRandomToggle = useCallback(() => {
-    setIsRandomMode(true);
-    setState((prev) => computeState(true, prev.shownIds, ingredientIds, filters));
-  }, [ingredientIds, filters]);
+    withOptionalAd(() => {
+      setIsRandomMode(true);
+      setState((prev) => computeState(true, prev.shownIds, ingredientIds, filters));
+    });
+  }, [withOptionalAd, ingredientIds, filters]);
 
   const goToDetail = useCallback(
     (recipeId: string) => {
