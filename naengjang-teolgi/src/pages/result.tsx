@@ -9,8 +9,6 @@ import { buildResultMessage } from '../recommendation/messages';
 import { RecommendationFilters, RecommendationSlot, ScoredRecipe } from '../recommendation/types';
 import { RecipeCard } from '../components/RecipeCard';
 import { ScreenHeader } from '../components/ScreenHeader';
-import { AdBanner } from '../components/AdBanner';
-import { RESULT_BANNER_AD_GROUP_ID } from '../ads';
 import { ResultRouteParams } from '../routeParams';
 import { colors, spacing } from '../theme';
 
@@ -140,7 +138,6 @@ function ResultPage() {
           </Pressable>
         </View>
 
-        <AdBanner adGroupId={RESULT_BANNER_AD_GROUP_ID} />
       </ScrollView>
     </View>
   );

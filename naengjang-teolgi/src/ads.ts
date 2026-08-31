@@ -1,8 +1,6 @@
 import { loadFullScreenAd, showFullScreenAd } from '@apps-in-toss/framework';
 
 export const INTERSTITIAL_AD_GROUP_ID = 'ait.v2.live.238719d8b37f4a42';
-export const RESULT_BANNER_AD_GROUP_ID = 'ait.v2.live.a2462babec214468';
-export const SELECT_BANNER_AD_GROUP_ID = 'ait.v2.live.a2462babec214468';
 
 type FullScreenAdEvent =
   | { type: 'requested' }

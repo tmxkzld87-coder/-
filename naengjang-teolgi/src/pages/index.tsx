@@ -19,8 +19,6 @@ import { SearchInput } from '../components/SearchInput';
 import { SelectedTray } from '../components/SelectedTray';
 import { FilterGroup } from '../components/FilterGroup';
 import { ScreenHeader } from '../components/ScreenHeader';
-import { AdBanner } from '../components/AdBanner';
-import { SELECT_BANNER_AD_GROUP_ID } from '../ads';
 import { RecentIngredientsStore } from '../storage/recentIngredients';
 import { CookTimeFilterValue, DifficultyFilterValue, MealCategoryFilterValue } from '../recommendation/types';
 import { colors, spacing } from '../theme';
@@ -166,7 +164,6 @@ function IngredientSelectPage() {
         <FilterGroup title="난이도" options={DIFFICULTY_OPTIONS} value={difficulty} onChange={setDifficulty} />
         <FilterGroup title="식사 종류" options={MEAL_CATEGORY_OPTIONS} value={mealCategory} onChange={setMealCategory} />
 
-        <AdBanner adGroupId={SELECT_BANNER_AD_GROUP_ID} />
       </ScrollView>
 
       <SelectedTray
