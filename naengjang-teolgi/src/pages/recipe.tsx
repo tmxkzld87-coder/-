@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from '@granite-js/native/react-native-safe-area-context';
 import { createRoute } from '@granite-js/react-native';
+import { getTossShareLink, share } from '@apps-in-toss/framework';
 import { getRecipe } from '../data/recipes';
 import { getIngredient } from '../data/ingredients';
 import { DIFFICULTY_LABEL } from '../recommendation/types';
 import { FavoritesStore } from '../storage/favorites';
 import { RecipeRouteParams } from '../routeParams';
 import { colors, spacing } from '../theme';
+
+const APP_ICON_URL = 'https://static.toss.im/appsintoss/77253/012d25c1-b3db-4412-8500-24ba637d0a1a.png';
 
 export const Route = createRoute<RecipeRouteParams>('/recipe', {
   component: RecipeDetailPage,
@@ -31,6 +34,18 @@ function RecipeDetailPage() {
     FavoritesStore.toggle(id)
       .then(setIsFavorite)
       .catch(() => {});
+  };
+
+  const handleShare = async () => {
+    if (!recipe) return;
+    try {
+      const shareLink = await getTossShareLink('intoss://naengjang-teolgi', APP_ICON_URL);
+      await share({
+        message: `🧊 냉장고 구조대에서 "${recipe.name}" 레시피를 찾았어요!\n⏱ ${recipe.cookTimeMinutes}분 · 난이도 ${DIFFICULTY_LABEL[recipe.difficulty]}\n\n${shareLink}`,
+      });
+    } catch {
+      // 사용자가 공유 시트를 취소한 경우 — 처리할 것 없음
+    }
   };
 
   if (!recipe) {
@@ -84,6 +99,10 @@ function RecipeDetailPage() {
             </View>
           ))}
         </View>
+
+        <Pressable style={styles.shareButton} onPress={handleShare} accessibilityLabel="공유하기">
+          <Text style={styles.shareButtonText}>📤 공유하기</Text>
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -180,5 +199,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     lineHeight: 20,
+  },
+  shareButton: {
+    height: 46,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: spacing.xl,
+  },
+  shareButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.accent,
   },
 });
