@@ -1,3 +1,4 @@
+import { getTossShareLink, share } from '@apps-in-toss/framework';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AdBanner } from '../components/AdBanner';
@@ -35,6 +36,20 @@ export function ResultScreen({ answers, onBack, onOpenReceivedAmount }: ResultSc
     ATTENDANCE_LABELS[answers.attendance],
     mealLabel(answers.eventType, answers.meal),
   ].join(' · ');
+
+  const handleShare = async () => {
+    try {
+      const shareLink = await getTossShareLink(
+        'intoss://gyeongjosabi-calc',
+        'https://static.toss.im/appsintoss/77253/29fd6222-f04e-418c-b846-117a13e106ec.png',
+      );
+      await share({
+        message: `${EVENT_LABELS[answers.eventType].emoji} ${EVENT_LABELS[answers.eventType].title} 경조사비, ${formatWon(recommended)} 추천받았어요!\n${summary}\n\n${shareLink}`,
+      });
+    } catch (error) {
+      console.error('공유 실패:', error);
+    }
+  };
 
   return (
     <View style={styles.screen}>
@@ -92,6 +107,7 @@ export function ResultScreen({ answers, onBack, onOpenReceivedAmount }: ResultSc
         </View>
 
         <PrimaryButton label="내가 받은 금액으로 계산하기" variant="secondary" onPress={onOpenReceivedAmount} />
+        <PrimaryButton label="결과 공유하기" variant="secondary" onPress={handleShare} />
 
         <Text style={styles.footerNotice}>경조사비에는 정해진 정답이 없으며, 관계와 상황에 따라 달라질 수 있습니다.</Text>
       </ScrollView>
