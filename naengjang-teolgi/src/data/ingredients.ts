@@ -52,7 +52,7 @@ export const INGREDIENTS: Ingredient[] = [
   { id: 'cabbage', name: '양배추', emoji: '🥬', categoryId: 'vegetable' },
   { id: 'chili-pepper', name: '고추', emoji: '🌶️', categoryId: 'vegetable' },
   { id: 'lettuce', name: '상추', emoji: '🍃', categoryId: 'vegetable' },
-  { id: 'kimchi', name: '김치', emoji: '🫙', categoryId: 'vegetable', frequentlyUsed: true },
+  { id: 'kimchi', name: '김치', emoji: '🥫', categoryId: 'vegetable', frequentlyUsed: true },
 
   // 🍚 탄수화물
   { id: 'rice', name: '밥', emoji: '🍚', categoryId: 'carb', frequentlyUsed: true },
